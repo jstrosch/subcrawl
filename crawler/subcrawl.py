@@ -326,9 +326,9 @@ def scrape(start_url, s_data):
                     bs = None
                 content_magic = magic.from_buffer(content).lower()
                 module_results = {}
-                if title is not None and \
-                    "index of" in title.get_text().lower() \
-                        and bs is not None:
+                if title is not None and bs is not None\
+                    and any(partial in title.get_text().lower() for partial in \
+                        SubCrawlHelpers.get_config(process_cfg, "crawler", "opendir_title")):
 
                     for link in bs.find_all('a'):
                         if link.has_attr('href'):

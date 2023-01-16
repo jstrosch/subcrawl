@@ -21,6 +21,9 @@ crawler:
     - YARAProcessing
   storage_modules:
     - SqliteStorage
+  opendir_title:
+    - index of
+    - directory listing for
   ext_exclude:
     - .js
     - .css
