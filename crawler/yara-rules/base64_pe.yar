@@ -9,5 +9,5 @@ rule base64_pe
     $this_program = /(VGhpcyBwcm9ncmFt|tFmcn9mcwBycphGV)/
     $null_bytes = "AAAAA"
  condition:
-    $mz_header and $this_program and #null_bytes > 2
+    $mz_header at 0 and $this_program and #null_bytes > 2
 }
