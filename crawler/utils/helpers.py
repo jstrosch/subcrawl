@@ -2,6 +2,7 @@
 import hashlib
 import re
 import sys
+from urllib.parse import urlparse
 
 # Source: https://codereview.stackexchange.com/questions/19663/http-url-validating
 valid_url = re.compile(
@@ -24,8 +25,11 @@ class SubCrawlHelpers:
         with open(file_name, "wb") as file:
             file.write(data)
 
-    def make_safe_http(url):
-        return url.replace('http', 'hxxp')
+    def defang_url(url):
+        parsed_url = urlparse(url)
+        last_dot = parsed_url.netloc.rindex('.')
+        defanged = parsed_url.netloc[0:last_dot] + '[.]' + parsed_url.netloc[last_dot + 1:]
+        return url.replace(parsed_url.netloc, defanged).replace('http', 'hxxp')
 
     def is_valid_url(url):
         if valid_url.match(url):

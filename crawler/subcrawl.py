@@ -155,7 +155,7 @@ def main(argv):
                     scraped_domains.add(parsed.netloc)
                 else:
                     logger.debug("[~] Domain already added to the scanning queue: "
-                                          + str(parsed.netloc))
+                                          + SubCrawlHelpers.defang_url(str(parsed.netloc)))
     else:
         logger.info("[ENGINE] Using file input for URL processing...")
         try:
@@ -172,7 +172,8 @@ def main(argv):
                                 scrape_urls.add(parsed_url)
                             scraped_domains.add(parsed.netloc)
                         else:
-                            logger.debug("[ENGINE] Domain already added to the scanning queue: " + str(parsed.netloc))  
+                            logger.debug("[ENGINE] Domain already added to the scanning queue: " 
+                                + str(parsed.netloc))
         except Exception as e:
             logger.error("[ENGINE] Error reading input file for URL processing: " + str(e))
             sys.exit(-1)
@@ -188,7 +189,7 @@ def main(argv):
     for start_url in scrape_urls:
         # This will add the full URL if it ends with an extension, then passes it along for parsing
         if start_url.endswith('.exe'):
-            logger.debug("[ENGINGE] Adding EXE URL directly: " + start_url)
+            logger.debug("[ENGINGE] Adding EXE URL directly: " + SubCrawlHelpers.defang_url(start_url))
             if start_url not in distinct_urls:
                 distinct_urls.append(start_url)
                 domain_urls.setdefault(parsed.netloc, []).append(start_url)
@@ -205,7 +206,7 @@ def main(argv):
         for path in paths:
             tmp_url = urljoin(tmp_url, path) + "/"
 
-            logger.debug("Generated new URL: " + tmp_url)
+            logger.debug("Generated new URL: " + SubCrawlHelpers.defang_url(tmp_url))
 
             if tmp_url not in distinct_urls:
                 distinct_urls.append(tmp_url)
@@ -264,7 +265,7 @@ def scrape_manager(data):
     init_pages = domain_urls
     process_processing_modules = processing_modules
 
-    logger.debug("[ENGINE] Starting down path... " + domain_urls[0])
+    logger.debug("[ENGINE] Starting down path... " + SubCrawlHelpers.defang_url(domain_urls[0]))
 
     result_dicts = list()
     for url in domain_urls:
@@ -285,7 +286,7 @@ def scrape(start_url, s_data):
     try:
         scrape_domain = dict()
         request_start = datetime.datetime.now()
-        logger.debug("[ENGINE] Scanning URL: " + start_url)
+        logger.debug("[ENGINE] Scanning URL: " + SubCrawlHelpers.defang_url(start_url))
         resp = requests.get(start_url, timeout=SubCrawlHelpers.get_config(
             process_cfg, "crawler", "http_request_timeout"),
             headers=SubCrawlHelpers.get_config(process_cfg, "crawler",
@@ -338,7 +339,7 @@ def scrape(start_url, s_data):
 
                                 if next_page not in crawl_pages and next_page not in init_pages \
                                     and not next_page.lower().endswith(tuple(SubCrawlHelpers.get_config(process_cfg, "crawler", "ext_exclude"))):
-                                    logger.debug("[ENGINE] Discovered: " + next_page)
+                                    logger.debug("[ENGINE] Discovered: " + SubCrawlHelpers.defang_url(next_page))
                                     crawl_pages.append(next_page)
                                     scrape(next_page, s_data)                
                 else:

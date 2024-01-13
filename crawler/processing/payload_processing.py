@@ -87,7 +87,7 @@ class PayloadProcessing(DefaultProcessing):
                     shasum + file_ext, content)
                 self.logger.info(SubCrawlColors.CYAN +
                                  "[PAYLOAD] Saved file " +
-                                 SubCrawlHelpers.make_safe_http(url) +
+                                 SubCrawlHelpers.defang_url(url) +
                                  SubCrawlColors.RESET)
             except Exception as e:
                 self.logger.error("[PAYLOAD] " + str(e))
