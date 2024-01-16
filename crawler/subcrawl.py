@@ -144,7 +144,7 @@ def main(argv):
         logger.info("[ENGINE] Using Kafka queue for URL processing...")
         for message in consumer:
             url = message.value
-            if SubCrawlHelpers.is_valid_url(url):
+            try:
                 parsed = urlparse(url)
                 if parsed.netloc not in scraped_domains:
                     parsed_url = url
@@ -156,6 +156,8 @@ def main(argv):
                 else:
                     logger.debug("[~] Domain already added to the scanning queue: "
                                           + SubCrawlHelpers.defang_url(str(parsed.netloc)))
+            except Exception as e:
+                logger.error("[ENGINE] Error parsing URL from Kafka: " + str(e))
     else:
         logger.info("[ENGINE] Using file input for URL processing...")
         try:
@@ -175,7 +177,7 @@ def main(argv):
                             logger.debug("[ENGINE] Domain already added to the scanning queue: " 
                                 + str(parsed.netloc))
                     except Exception as e:
-                        logger.error("[ENGINE] Error reading input file for URL processing: " + str(e))
+                        logger.error("[ENGINE] Error parsing URL from file: " + str(e))
         except Exception as e:
             logger.error("[ENGINE] Error reading input file for URL processing: " + str(e))
             sys.exit(-1)
