@@ -161,8 +161,8 @@ def main(argv):
         try:
             with open(options.file_path, 'r') as f:
                 for url in f:
-                    url = url.strip()
-                    if SubCrawlHelpers.is_valid_url(url):
+                    try:
+                        url = url.strip()
                         parsed = urlparse(url)
                         if parsed.netloc not in scraped_domains:
                             parsed_url = url
@@ -174,6 +174,8 @@ def main(argv):
                         else:
                             logger.debug("[ENGINE] Domain already added to the scanning queue: " 
                                 + str(parsed.netloc))
+                    except Exception as e:
+                        logger.error("[ENGINE] Error reading input file for URL processing: " + str(e))
         except Exception as e:
             logger.error("[ENGINE] Error reading input file for URL processing: " + str(e))
             sys.exit(-1)
@@ -387,9 +389,9 @@ def scrape(start_url, s_data):
 
 def remove_url_resource(unparsed_url):
     try:
-        regex = r"\b((?:https?://)(?:(?:www\.)?(?:[\da-z\.-]+)\.(?:[a-z]{2,8})|(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)|(?:(?:[0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|(?:[0-9a-fA-F]{1,4}:){1,7}:|(?:[0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|(?:[0-9a-fA-F]{1,4}:){1,5}(?::[0-9a-fA-F]{1,4}){1,2}|(?:[0-9a-fA-F]{1,4}:){1,4}(?::[0-9a-fA-F]{1,4}){1,3}|(?:[0-9a-fA-F]{1,4}:){1,3}(?::[0-9a-fA-F]{1,4}){1,4}|(?:[0-9a-fA-F]{1,4}:){1,2}(?::[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:(?:(?::[0-9a-fA-F]{1,4}){1,6})|:(?:(?::[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(?::[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(?:ffff(?::0{1,4}){0,1}:){0,1}(?:(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])|(?:[0-9a-fA-F]{1,4}:){1,4}:(?:(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])))(?::(?:[0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))?(?:(?:/[\w\.-]*)*/)?)\b"
-        match = re.search(regex, unparsed_url, re.IGNORECASE)
-        return match.group()
+        parsed_url = urlparse(unparsed_url)
+        last_slash = parsed_url.path.rindex('/')
+        return unparsed_url.replace(parsed_url.path[last_slash +1:], "")
     except Exception as e:
         logger.error("[URL_PARSER] Error with URL " + unparsed_url + str(e))
         return None

@@ -33,7 +33,8 @@ class PayloadProcessing(DefaultProcessing):
         if any(partial in content_magic for partial in
                SubCrawlHelpers.get_config(self.cfg, "crawler", "pe_magics")):
             self.logger.info(SubCrawlColors.CYAN + "[PAYLOAD] PE file found " +
-                             url + " (" + shasum + ")" + SubCrawlColors.RESET)
+                             url + " (" + shasum + ")" 
+                             + SubCrawlColors.RESET)
 
             file_ext = ".bin"
             if "(dll)" in content_magic:
@@ -47,31 +48,36 @@ class PayloadProcessing(DefaultProcessing):
                  SubCrawlHelpers.get_config(self.cfg, "crawler",
                                             "archive_magics")):
             self.logger.info(SubCrawlColors.CYAN + "[PAYLOAD] ZIP found at " +
-                             url + " (" + shasum + ")" + SubCrawlColors.RESET)
+                             url + " (" + shasum + ")" +
+                             SubCrawlColors.RESET)
             file_ext = ".zip.bin"
         elif any(partial in content_magic for partial in
                  SubCrawlHelpers.get_config(self.cfg, "crawler",
                                             "php_magics")):
             self.logger.info(SubCrawlColors.CYAN + "[PAYLOAD] PHP found at " +
-                             url + " (" + shasum + ")" + SubCrawlColors.RESET)
+                             SubCrawlHelpers.defang_url(url) + " (" + shasum + ")" + 
+                             SubCrawlColors.RESET)
             file_ext = ".php.bin"
         elif any(partial in content_magic for partial in
                  SubCrawlHelpers.get_config(self.cfg, "crawler",
                                             "office_magics")):
             self.logger.info(SubCrawlColors.CYAN + "[PAYLOAD] Doc found at " +
-                             url + " (" + shasum + ")" + SubCrawlColors.RESET)
+                             SubCrawlHelpers.defang_url(url) + " (" + shasum + ")" +
+                             SubCrawlColors.RESET)
             file_ext = ".office.bin"
         elif any(partial in content_magic for partial in
                  SubCrawlHelpers.get_config(self.cfg, "crawler",
                                             "elf_magics")):
             self.logger.info(SubCrawlColors.CYAN + "[PAYLOAD] ELF found at " +
-                             url + " (" + shasum + ")" + SubCrawlColors.RESET)
+                             SubCrawlHelpers.defang_url(url) + " (" + shasum + ")" +
+                             SubCrawlColors.RESET)
             file_ext = ".elf.bin"
         elif any(partial in content_magic for partial in
                  SubCrawlHelpers.get_config(self.cfg, "crawler",
                                             "java_magics")):
             self.logger.info(SubCrawlColors.CYAN + "[PAYLOAD] Java found at " +
-                             url + " (" + shasum + ")" + SubCrawlColors.RESET)
+                             SubCrawlHelpers.defang_url(url) + " (" + shasum + ")" +
+                             SubCrawlColors.RESET)
         else:
             content_match = False
 
