@@ -62,6 +62,7 @@ optional arguments:
   - YARAProcessing
 
   Available storage modules: 
+  - ElasticStorage
   - ConsoleStorage
   - MISPStorage
   - SqliteStorage
