@@ -91,3 +91,10 @@ elasticsearch:
   index: subcrawl
   archive_response_content: False
   archive_log_location: "log/"
+external_intel:
+    vt_api: <NOT SET>
+    urlhaus_api: <NOT SET>
+    bazaar_api: <NOT SET>
+    submit_urlhaus: False
+    submit_bazaar: False
+    

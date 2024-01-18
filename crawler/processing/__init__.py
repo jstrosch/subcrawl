@@ -1,5 +1,6 @@
 # © Copyright 2021 HP Development Company, L.P.
 from .payload_processing import PayloadProcessing
+from .external_intel_processing import ExternalIntelProcessing
 from .yara_processing import YARAProcessing
 from .clamav_processing import ClamAVProcessing
 from .jarm_processing import JARMProcessing
