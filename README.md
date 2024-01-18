@@ -54,6 +54,7 @@ optional arguments:
                         Storage modules to be executed comma separated.
 
   Available processing modules: 
+  - ExternalIntelProcessing
   - ClamAVProcessing
   - JARMProcessing
   - PayloadProcessing
@@ -114,6 +115,12 @@ Input modules are only used in service mode. If SubCrawl started using the run-o
 ### Processing Modules
 
 SubCrawl comes with several processing modules. The processing modules all follow similar behavior on how they provide results back to the core engine. If matches are found, results are returned to the core engine and later provided to the storage modules.  Below is a list of processing modules.
+
+#### External Intelligence (Abuse.ch, VirusTotal)
+
+The [ExternalIntel](https://github.com/jstrosch/subcrawl/blob/main/crawler/processing/external_intel_processing.py) processing module is used to check for the presense of a URL on the URLHaus, or a payload (via SHA256 hash) on the malware Bazaar. If the value exists, the module will parse the response and print the family tag associated with it. Optionally, this module can be used to submit samples and URLs to each respective Abuse.ch service. This module depends on configuration of the appropriate API key in the external_intel section in the [primary configuration](https://github.com/jstrosch/subcrawl/blob/main/crawler/config.yml).
+
+![external intelligence processing module output](images/external_intel.png)
 
 #### SDHash
 
