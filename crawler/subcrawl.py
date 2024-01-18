@@ -144,7 +144,7 @@ def main(argv):
         logger.info("[ENGINE] Using Kafka queue for URL processing...")
         for message in consumer:
             url = message.value
-            try:
+            if SubCrawlHelpers.is_valid_url(url):
                 parsed = urlparse(url)
                 if parsed.netloc not in scraped_domains:
                     parsed_url = url
@@ -156,8 +156,6 @@ def main(argv):
                 else:
                     logger.debug("[~] Domain already added to the scanning queue: "
                                           + SubCrawlHelpers.defang_url(str(parsed.netloc)))
-            except Exception as e:
-                logger.error("[ENGINE] Error parsing URL from Kafka: " + str(e))
     else:
         logger.info("[ENGINE] Using file input for URL processing...")
         try:
@@ -177,7 +175,7 @@ def main(argv):
                             logger.debug("[ENGINE] Domain already added to the scanning queue: " 
                                 + str(parsed.netloc))
                     except Exception as e:
-                        logger.error("[ENGINE] Error parsing URL from file: " + str(e))
+                        logger.error("[ENGINE] Error reading input file for URL processing: " + str(e))
         except Exception as e:
             logger.error("[ENGINE] Error reading input file for URL processing: " + str(e))
             sys.exit(-1)
@@ -208,13 +206,17 @@ def main(argv):
             continue  # don't scan simple domains.
 
         for path in paths:
-            tmp_url = urljoin(tmp_url, path) + "/"
+            try:
+                tmp_url = urljoin(tmp_url, path) + "/"
+                tmp_url_parsed = urlparse(tmp_url)
 
-            logger.debug("Generated new URL: " + SubCrawlHelpers.defang_url(tmp_url))
+                logger.debug("Generated new URL: " + SubCrawlHelpers.defang_url(tmp_url))
 
-            if tmp_url not in distinct_urls:
-                distinct_urls.append(tmp_url)
-                domain_urls.setdefault(parsed.netloc, []).append(tmp_url)
+                if tmp_url not in distinct_urls:
+                    distinct_urls.append(tmp_url)
+                    domain_urls.setdefault(parsed.netloc, []).append(tmp_url)
+            except Exception as e:
+                logger.debug("[ENGINE] error parsing generated url: " + str(e))
 
     # endregion
 
