@@ -9,7 +9,7 @@ py_tlsh == 4.5.0
 pyjarm == 0.0.5
 pymisp == 2.4.140
 python_magic == 0.4.22
-requests == 2.25.0
+requests == 2.32.0
 timeloop == 1.0.2
 yara_python == 4.0.5
 gunicorn == 20.0.4
